@@ -1,3 +1,5 @@
+// import {BreadthTraversal, DepthTraversal} from  "./Traversal.js"
+
 class Node {
     constructor(data) {
         this.data = data;
@@ -13,8 +15,8 @@ class Tree {
 
     buildTree(array) {
         const sortedArray = array.sort((x,y) => x - y);
-        this.root = this.recursion(sortedArray, 0, sortedArray.length - 1)
-        return this.root
+        this.root = this.recursion(sortedArray, 0, sortedArray.length - 1);
+        return this.root;
     }
 
     recursion(array, start, end) {
@@ -105,7 +107,6 @@ class Tree {
                                 Son.left = node.left;
                                 Father.left = Son;
                             } else {
-                                console.log("entrou aqui");
                                 Father.right = Son;
                             }
                         }
@@ -155,9 +156,111 @@ class Tree {
         }
         return findNode(this.root, value);
     }
-}
 
-const teste = new Tree([5,4,2,3,7,1,6]);
-teste.insert(8);
-teste.deletItem(6);
-console.log(teste);
+    levelOrder(callback) {
+        return callback;
+    }
+    
+    DepthTraversal(callback) {
+        return callback;
+    }
+
+    Height(value) {
+        function recursiveHeight(node, value) {
+            if (!node) {
+                return;
+            }
+            
+            if (node.data === value) {
+                return 1
+            }
+
+            if ((node.left && !node.right) || (!node.left && node.right)) {
+                if (node.left) {
+                    let valueLeft = recursiveHeight(node.left, value);
+                    return valueLeft + 1; 
+                } else if (node.right) {
+                    let valueLeft = recursiveHeight(node.right, value);
+                    return valueLeft + 1; 
+                }
+            }
+
+            if (node.left && node.right) {
+                let leftValue = recursiveHeight(node.left, value);
+                let rightValue = recursiveHeight(node.right, value);
+                if (rightValue > leftValue) {
+                    return rightValue + 1;
+                } else if (leftValue > rightValue) {
+                    return leftValue + 1;
+                } else {
+                    return rightValue + 1;
+                }
+            }
+        }
+        return recursiveHeight(this.root, value);
+    }
+
+    Depth(value) {
+        return this.Height(value) - 1;
+    }
+
+    isBalanced() {
+        function subtreeHeight(node) {
+            if (!node) {
+                return;
+            }
+            
+            if (!node.left && !node.right) {
+                return 1
+            }
+
+            if ((node.left && !node.right) || (!node.left && node.right)) {
+                if (node.left) {
+                    let valueLeft = subtreeHeight(node.left);
+                    return valueLeft + 1; 
+                } else if (node.right) {
+                    let valueLeft = subtreeHeight(node.right);
+                    return valueLeft + 1; 
+                }
+            }
+
+            if (node.left && node.right) {
+                let leftValue = subtreeHeight(node.left);
+                let rightValue = subtreeHeight(node.right);
+                if (rightValue > leftValue) {
+                    return rightValue + 1;
+                } else if (leftValue > rightValue) {
+                    return leftValue + 1;
+                } else {
+                    return rightValue + 1;
+                }
+            }
+        }
+
+        const leftSide = subtreeHeight(this.root.left);
+        const rightSide = subtreeHeight(this.root.right);
+        
+        if (leftSide > rightSide) {
+            return (leftSide - rightSide) <= 1;
+            
+        } else if (rightSide > leftSide) {
+            return (rightSide - leftSide) <= 1;
+        } else {
+            return false;
+        }
+    }
+
+    rebalance() {
+        function Depth(node, result = []) {
+            if (!node) {
+                return;
+            }
+
+            Depth(node.left, result);
+            Depth(node.right, result);
+            result.push(node.data);
+            return result;
+        }
+        return this.buildTree(Depth(this.root));
+    }    
+}
